@@ -143,9 +143,3 @@ Dashboard at: http://localhost:3000
 - **Shared Zod schemas** — validation is defined once, used in both frontend and backend
 - **Audit log** — every CREATE/UPDATE/DELETE/LOGIN/LOGOUT is persisted with actor and IP
 
-## Assumptions
-
-1. All monetary amounts are stored as `DECIMAL(15,2)` — supports up to ₹999,999,999.99
-2. Records belong to the user who created them but are visible to all authenticated users
-3. Self-deactivation is prevented at the service layer
-4. Rate limiting is per-IP: 100 requests per 60 seconds
