@@ -3,22 +3,22 @@
   "version": "1.0.0",
   "private": true,
   "description": "Finance Dashboard — Express REST API",
-  "main": "dist/server.js",
+  "main": "dist/apps/api/src/server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio",
-    "db:seed": "ts-node src/database/seed.ts",
-    "db:reset": "prisma migrate reset --force",
+    "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/apps/api/src/server.js",
+    "db:migrate": "prisma migrate dev --schema=prisma/schema.prisma",
+    "db:migrate:deploy": "prisma migrate deploy --schema=prisma/schema.prisma",
+    "db:studio": "prisma studio --schema=prisma/schema.prisma",
+    "db:seed": "ts-node -r tsconfig-paths/register src/database/seed.ts",
+    "db:reset": "prisma migrate reset --force --schema=prisma/schema.prisma",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts"
+    "generate": "prisma generate --schema=prisma/schema.prisma"
   },
   "dependencies": {
     "@finance/shared": "workspace:*",
-    "@prisma/client": "^5.14.0",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -27,10 +27,8 @@
     "express-rate-limit": "^7.3.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -39,14 +37,14 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
-    "@types/uuid": "^10.0.0",
-    "prisma": "^5.14.0",
+    "prisma": "^5.22.0",
+    "tsc-alias": "^1.8.10",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }
 }

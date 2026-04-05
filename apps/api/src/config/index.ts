@@ -1,7 +1,11 @@
-import dotenv from "dotenv";
 import path from "path";
+import dotenv from "dotenv";
 
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+// In ts-node-dev: __dirname = apps/api/src/config  → go up 3 levels → apps/api/
+// In compiled dist: dist/apps/api/src/config → also go up to find .env
+// Best solution: find .env relative to CWD (process.cwd()) which is always apps/api when running scripts
+const envPath = path.resolve(process.cwd(), ".env");
+dotenv.config({ path: envPath });
 
 function requireEnv(key: string): string {
   const value = process.env[key];
