@@ -4,7 +4,7 @@ export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
-  errors?: Record<string, string[]>;
+  errors?: { [key: string]: string[] };
 }
 
 function getAccessToken(): string | null {
@@ -33,9 +33,9 @@ async function request<T>(
 ): Promise<ApiResponse<T>> {
   const token = getAccessToken();
 
-  const headers: Record<string, string> = {
+  const headers: { [key: string]: string } = {
     "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
+    ...(options.headers as { [key: string]: string }),
   };
 
   if (token) {
@@ -103,10 +103,10 @@ export const recordsApi = {
     Object.entries(params).forEach(([k, v]) => {
       if (v !== undefined && v !== "" && v !== null) query.set(k, String(v));
     });
-    return request<{ data: Record[]; pagination: Pagination }>(`/api/records?${query}`);
+    return request<{ data: FinanceRecord[]; pagination: Pagination }>(`/api/records?${query}`);
   },
 
-  getById: (id: string) => request<Record>(`/api/records/${id}`),
+  getById: (id: string) => request<FinanceRecord>(`/api/records/${id}`),
 
   create: (data: {
     amount: number;
@@ -114,13 +114,13 @@ export const recordsApi = {
     category: string;
     date: string;
     description?: string;
-  }) => request<Record>("/api/records", { method: "POST", body: JSON.stringify(data) }),
+  }) => request<FinanceRecord>("/api/records", { method: "POST", body: JSON.stringify(data) }),
 
   update: (id: string, data: Partial<{ amount: number; type: string; category: string; date: string; description: string }>) =>
-    request<Record>(`/api/records/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+    request<FinanceRecord>(`/api/records/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
 
   delete: (id: string) =>
-    request<Record>(`/api/records/${id}`, { method: "DELETE" }),
+    request<FinanceRecord>(`/api/records/${id}`, { method: "DELETE" }),
 };
 
 // ─── Dashboard ─────────────────────────────────────────────────────────────
@@ -166,7 +166,8 @@ export interface User {
   updatedAt: string;
 }
 
-export interface Record {
+// Renamed from Record to avoid conflict with TypeScript built-in Record<K,V>
+export interface FinanceRecord {
   id: string;
   amount: string | number;
   type: "INCOME" | "EXPENSE";
@@ -178,6 +179,9 @@ export interface Record {
   createdAt: string;
   updatedAt: string;
 }
+
+// Keep backward-compat alias consumed by older page components
+export type { FinanceRecord as Record };
 
 export interface RecordFilters {
   page?: number;
