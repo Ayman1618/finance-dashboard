@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -40,16 +41,15 @@ export default function LoginPage() {
       <div className="auth-bg-orb auth-bg-orb-2" />
 
       <div className="auth-card">
-        <div className="auth-logo">
-          <div className="logo-icon">💹</div>
+        <div className="auth-logo" style={{ cursor: "pointer" }} onClick={() => router.push("/")}>
+          <div className="logo-icon">✨</div>
           <div>
             <div className="logo-text">FinanceOS</div>
-            <div className="logo-sub">Finance Dashboard</div>
           </div>
         </div>
 
         <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-subtitle">Sign in to access your finance dashboard</p>
+        <p className="auth-subtitle">Sign in to your account to continue</p>
 
         {error && <div className="auth-error">⚠️ {error}</div>}
 
@@ -83,12 +83,16 @@ export default function LoginPage() {
             id="login-submit"
             type="submit"
             className="btn btn-primary"
-            style={{ width: "100%", marginTop: "8px", padding: "12px" }}
+            style={{ width: "100%", padding: "12px" }}
             disabled={loading}
           >
             {loading ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} /> Signing in...</> : "Sign in"}
           </button>
         </form>
+
+        <p style={{ marginTop: 24, textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
+          Don't have an account? <Link href="/register" style={{ color: "var(--accent-light)", textDecoration: "none", fontWeight: 500 }}>Sign up</Link>
+        </p>
 
         {/* Quick demo logins */}
         <div style={{ marginTop: 28, borderTop: "1px solid var(--border)", paddingTop: 20 }}>

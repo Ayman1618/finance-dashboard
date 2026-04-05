@@ -2,12 +2,13 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authApi, setTokens, clearTokens, getRefreshToken, type User } from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => Promise<void>;
 }
 
@@ -17,6 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   const fetchMe = useCallback(async () => {
     try {
@@ -42,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setLoading(false);
     }
-  }, [fetchMe]);
+  }, [fetchMe, pathname]);
 
   const login = async (email: string, password: string) => {
     const res = await authApi.login(email, password);
@@ -52,6 +54,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { success: true, message: res.message };
     }
     return { success: false, message: res.message || "Login failed" };
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    const res = await authApi.register(name, email, password);
+    if (res.success) {
+      // After register, we should log them in automatically.
+      return login(email, password);
+    }
+    return { success: false, message: res.message || "Registration failed" };
   };
 
   const logout = async () => {
@@ -65,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
